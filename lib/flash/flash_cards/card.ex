@@ -35,6 +35,7 @@ defmodule Flash.Card do
     field(:next_review, :naive_datetime, default: NaiveDateTime.utc_now())
     field(:last_review, :naive_datetime, default: NaiveDateTime.utc_now())
 
+    belongs_to(:deck, Flash.Deck)
     timestamps()
   end
 
@@ -49,15 +50,17 @@ defmodule Flash.Card do
 
   @spec update(t(), true) :: Ecto.Query.t()
   def update(%Card{} = card, true) do
-    from c in Card,
-    where: c.id == ^card.id,
-    update: [inc: [successes: 1, times_seen: 1]]
+    from(c in Card,
+      where: c.id == ^card.id,
+      update: [inc: [successes: 1, times_seen: 1]]
+    )
   end
 
   def update(%Card{} = card, false) do
-    from c in Card,
-    where: c.id == ^card.id,
-    update: [inc: [failures: 1, times_seen: 1]]
+    from(c in Card,
+      where: c.id == ^card.id,
+      update: [inc: [failures: 1, times_seen: 1]]
+    )
   end
 
   defp calculate_mastery(ratio, seen) when seen <= 10 and seen >= 5 do

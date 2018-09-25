@@ -1,5 +1,6 @@
 defmodule Flash.Deck do
   alias __MODULE__
+  alias Flash.{Card, Topic}
   use Ecto.Schema
 
   @moduledoc """
@@ -10,14 +11,19 @@ defmodule Flash.Deck do
 
   @type t :: %Deck{
           title: String.t(),
-          topic: Flash.Topic.t(),
-          cards: list(Flash.Card.t())
+          topic: Topic.t(),
+          cards: list(Card.t())
         }
 
   schema "decks" do
     field(:title, :string)
 
-    belongs_to(:topic, Flash.Topic)
-    has_many(:cards, Flash.Card)
+    belongs_to(:topic, Topic)
+    has_many(:cards, Card)
+  end
+
+  @spec build_card(t(), %{front: String.t(), back: String.t()}) :: Card.t()
+  def build_card(%Deck{} = deck, %{front: _, back: _} = attrs) do
+    Ecto.build_assoc(deck, :cards, attrs)
   end
 end
