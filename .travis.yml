@@ -1,0 +1,16 @@
+language: elixir
+  elixir:
+    - 1.7.3
+  otp_release:
+    - 20.0
+  addons:
+    - postgresql: '9.4'
+  
+  services:
+    - postgresql
+
+ before_script:
+  - mix ecto.setup
+
+ script:
+  - mix test --trace && mix dialyzer && mix credo
