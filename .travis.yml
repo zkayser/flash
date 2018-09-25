@@ -5,12 +5,12 @@ language: elixir
     - 20.0
   addons:
     - postgresql: '9.4'
-  
+
   services:
     - postgresql
 
- before_script:
-  - mix ecto.setup
+  before_script:
+    - mix ecto.setup
 
- script:
-  - mix test --trace && mix dialyzer && mix credo
+  script:
+    - mix test --trace && mix dialyzer && mix credo
