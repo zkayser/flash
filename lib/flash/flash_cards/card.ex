@@ -1,7 +1,7 @@
 defmodule Flash.Card do
   alias __MODULE__
   use Ecto.Schema
-  import Ecto.Query
+  import Ecto.{Query, Changeset}
 
   @moduledoc """
   This module contains a database-backed struct representing
@@ -61,6 +61,13 @@ defmodule Flash.Card do
       where: c.id == ^card.id,
       update: [inc: [failures: 1, times_seen: 1]]
     )
+  end
+
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
+  def changeset(%Card{} = card, attrs \\ %{}) do
+    card
+    |> cast(attrs, [:front, :back])
+    |> validate_required([:front, :back])
   end
 
   defp calculate_mastery(ratio, seen) when seen <= 10 and seen >= 5 do
