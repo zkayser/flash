@@ -13,4 +13,4 @@ before_script:
   - mix ecto.setup
 
 script:
-  - mix test --trace && mix dialyzer && mix credo
+  - mix test --trace && mix credo
