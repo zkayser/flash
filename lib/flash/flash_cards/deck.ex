@@ -1,6 +1,7 @@
 defmodule Flash.Deck do
   alias __MODULE__
   alias Flash.{Card, Topic}
+  import Ecto.Changeset
   use Ecto.Schema
 
   @moduledoc """
@@ -25,5 +26,12 @@ defmodule Flash.Deck do
   @spec build_card(t(), %{front: String.t(), back: String.t()}) :: Card.t()
   def build_card(%Deck{} = deck, %{front: _, back: _} = attrs) do
     Ecto.build_assoc(deck, :cards, attrs)
+  end
+
+  @spec changeset(t(), map()) :: Ecto.Changeset.t()
+  def changeset(%Deck{} = struct, params \\ %{}) do
+    struct
+    |> cast(params, [:title])
+    |> validate_required(:title)
   end
 end

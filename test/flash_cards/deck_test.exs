@@ -11,4 +11,20 @@ defmodule Flash.DeckTest do
       assert %Card{front: @question, back: @answer} = card
     end
   end
+
+  describe "changeset/2" do
+    test "requires title to be present" do
+      changeset = Deck.changeset(%Deck{}, %{title: ""})
+      refute changeset.valid?
+    end
+
+    test "requires title to be non-nil" do
+      changeset = Deck.changeset(%Deck{}, %{title: nil})
+      refute changeset.valid?
+    end
+
+    test "valid changeset" do
+      assert Deck.changeset(%Deck{}, %{title: "Hello"}).valid?
+    end
+  end
 end
