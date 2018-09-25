@@ -18,4 +18,17 @@ defmodule Flash.TopicTest do
       assert %Topic{name: @sub_topic, topic_id: 1} = sub_topic
     end
   end
+
+  describe "changeset/2" do
+    test "when name is blank" do
+      changeset = Topic.changeset(%Topic{}, %{title: ""})
+      refute changeset.valid?
+      assert {:name, {"can't be blank", [validation: :required]}} in changeset.errors
+    end
+
+    test "with valid attributes" do
+      changeset = Topic.changeset(%Topic{}, %{name: @title})
+      assert changeset.valid?
+    end
+  end
 end
