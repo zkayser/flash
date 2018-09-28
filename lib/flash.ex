@@ -1,6 +1,5 @@
 defmodule Flash do
   alias Flash.{Topic, Deck, Card, Repo}
-
   @moduledoc """
   Flash keeps the contexts that define your domain
   and business logic.
@@ -20,7 +19,6 @@ defmodule Flash do
   @spec create_topic(map()) :: result()
   def create_topic(attrs) when is_map(attrs) do
     changeset = Topic.changeset(%Topic{}, attrs)
-
     case changeset.valid? do
       true -> insert(changeset)
       false -> handle_errors(changeset)
@@ -34,7 +32,6 @@ defmodule Flash do
   @spec create_deck(map()) :: result()
   def create_deck(attrs) when is_map(attrs) do
     changeset = Deck.changeset(%Deck{}, attrs)
-
     case changeset.valid? do
       true -> insert(changeset)
       false -> handle_errors(changeset)
@@ -52,7 +49,6 @@ defmodule Flash do
   @spec create_card(map()) :: result()
   def create_card(attrs) when is_map(attrs) do
     changeset = Card.changeset(%Card{}, attrs)
-
     case changeset.valid? do
       true -> insert(changeset)
       false -> handle_errors(changeset)
@@ -67,16 +63,14 @@ defmodule Flash do
   end
 
   defp handle_errors(%Ecto.Changeset{} = changeset) do
-    errors =
-      Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-        Enum.reduce(opts, msg, fn {key, value}, acc ->
-          String.replace(acc, "%{#{key}}", to_string(value))
-        end)
+    errors = Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
       end)
+    end)
 
-    {:error,
-     Enum.map(errors, fn {key, value} ->
-       String.capitalize("#{key} #{value}")
-     end)}
+    {:error, Enum.map(errors, fn {key, value} ->
+      String.capitalize("#{key} #{value}")
+    end)}
   end
 end

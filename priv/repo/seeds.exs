@@ -9,3 +9,16 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+topic_attrs = [
+  %{name: "Elixir"},
+  %{name: "C"},
+  %{name: "Swift"},
+  %{name: "JavaScript"},
+  %{name: "Elm"},
+  %{name: "ReasonML"}
+]
+
+Enum.each(topic_attrs, fn attrs ->
+  Flash.create_deck(attrs)
+end)
