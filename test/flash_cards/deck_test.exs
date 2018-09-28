@@ -14,17 +14,19 @@ defmodule Flash.DeckTest do
 
   describe "changeset/2" do
     test "requires title to be present" do
-      changeset = Deck.changeset(%Deck{}, %{title: ""})
-      refute changeset.valid?
+      refute Deck.changeset(%Deck{}, %{title: "", topic_id: 1}).valid?
     end
 
     test "requires title to be non-nil" do
-      changeset = Deck.changeset(%Deck{}, %{title: nil})
-      refute changeset.valid?
+      refute Deck.changeset(%Deck{}, %{title: nil, topic_id: 1}).valid?
+    end
+
+    test "requires a topic id" do
+      refute Deck.changeset(%Deck{}, %{title: "Title"}).valid?
     end
 
     test "valid changeset" do
-      assert Deck.changeset(%Deck{}, %{title: "Hello"}).valid?
+      assert Deck.changeset(%Deck{}, %{title: "Hello", topic_id: 1}).valid?
     end
   end
 end

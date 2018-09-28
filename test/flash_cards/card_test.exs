@@ -119,9 +119,12 @@ defmodule Flash.CardTest do
       assert {:back, @error} in changeset.errors
     end
 
+    test "when deck_id is missing" do
+      refute Card.changeset(%Card{}, %{front: @question, back: @answer}).valid?
+    end
+
     test "when the card is valid" do
-      changeset = Card.changeset(%Card{}, %{front: @question, back: @answer})
-      assert changeset.valid?
+      assert Card.changeset(%Card{}, %{front: @question, back: @answer, deck_id: 1}).valid?
     end
   end
 end

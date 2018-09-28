@@ -13,7 +13,7 @@ defmodule Flash.Application do
       # Start the Ecto repository
       supervisor(Flash.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(FlashWeb.Endpoint, []),
+      supervisor(FlashWeb.Endpoint, [])
       # Start your own worker by calling: Flash.Worker.start_link(arg1, arg2, arg3)
       # worker(Flash.Worker, [arg1, arg2, arg3]),
     ]

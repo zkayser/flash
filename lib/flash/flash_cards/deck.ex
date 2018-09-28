@@ -10,20 +10,18 @@ defmodule Flash.Deck do
   manipulating and transforming `Deck`s.
   """
 
-  @type t :: %Deck{
-          title: String.t(),
-          topic: Topic.t(),
-          cards: list(Card.t())
-        }
+  @type t :: %Deck{}
 
   schema "decks" do
     field(:title, :string)
 
     belongs_to(:topic, Topic)
     has_many(:cards, Card)
+
+    timestamps()
   end
 
-  @spec build_card(t(), %{front: String.t(), back: String.t()}) :: Card.t()
+  @spec build_card(t(), map()) :: Card.t()
   def build_card(%Deck{} = deck, %{front: _, back: _} = attrs) do
     Ecto.build_assoc(deck, :cards, attrs)
   end
@@ -31,7 +29,7 @@ defmodule Flash.Deck do
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(%Deck{} = struct, params \\ %{}) do
     struct
-    |> cast(params, [:title])
-    |> validate_required(:title)
+    |> cast(params, [:title, :topic_id])
+    |> validate_required([:title, :topic_id])
   end
 end

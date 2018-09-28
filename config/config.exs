@@ -14,8 +14,7 @@ config :flash, FlashWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "thMKMzj30X40TAyhRSru1emdVO3Op2bHBqikhjBpNEtb+IhvLQIBhPK6f4H+BgsE",
   render_errors: [view: FlashWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Flash.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Flash.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -24,4 +23,4 @@ config :logger, :console,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

@@ -14,15 +14,7 @@ defmodule Flash.Card do
   what level the reviewer is at for a given flash card.
   """
 
-  @type t :: %Card{
-          front: String.t(),
-          back: String.t(),
-          successes: non_neg_integer,
-          failures: non_neg_integer,
-          times_seen: non_neg_integer,
-          next_review: DateTime.t(),
-          last_review: DateTime.t()
-        }
+  @type t :: %Card{}
 
   @type mastery :: :rookie | :beginner | :amateur | :pro | :master
 
@@ -66,8 +58,8 @@ defmodule Flash.Card do
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(%Card{} = card, attrs \\ %{}) do
     card
-    |> cast(attrs, [:front, :back])
-    |> validate_required([:front, :back])
+    |> cast(attrs, [:front, :back, :deck_id])
+    |> validate_required([:front, :back, :deck_id])
   end
 
   defp calculate_mastery(ratio, seen) when seen <= 10 and seen >= 5 do
