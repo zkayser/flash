@@ -32,5 +32,15 @@ defmodule Flash.DeckControllerTest do
 
       assert response == %{"error" => "Topic not found"}
     end
+
+    test "when there are no decks for a topic", %{conn: conn} do
+      topic = insert(:topic)
+      response =
+        conn
+        |> get(deck_path(conn, :index, %{"topic_id" => topic.id}))
+        |> json_response(200)
+
+      assert response == %{"data" => []}
+    end
   end
 end
