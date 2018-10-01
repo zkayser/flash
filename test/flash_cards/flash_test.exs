@@ -128,4 +128,16 @@ defmodule FlashTest do
       assert Flash.get_card(123) == nil
     end
   end
+
+  describe "update_deck/2" do
+    test "with valid params", data do
+      assert {:ok, %Flash.Deck{} = deck} = Flash.update_deck(data.deck, %{"title" => "new title"})
+      assert deck.title == "new title"
+    end
+
+    test "with invalid params", data do
+      assert {:error, errors} = Flash.update_deck(data.deck, %{"title" => ""})
+      assert "Title can't be blank" in errors
+    end
+  end
 end

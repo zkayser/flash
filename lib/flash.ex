@@ -58,6 +58,18 @@ defmodule Flash do
   end
 
   @doc """
+  Updates a deck
+  """
+  @spec update_deck(Deck.t(), map()) :: result()
+  def update_deck(%Deck{} = deck, attrs) do
+    changeset = Deck.changeset(deck, attrs)
+    case changeset.valid? do
+      true -> update(changeset)
+      false -> handle_errors(changeset)
+    end
+  end
+
+  @doc """
   Retrieves the given deck
   """
   @spec get_deck(non_neg_integer) :: Deck.t() | nil
@@ -99,6 +111,13 @@ defmodule Flash do
 
   defp insert(%Ecto.Changeset{} = changeset) do
     case Repo.insert(changeset) do
+      {:ok, struct} -> {:ok, struct}
+      {:error, changeset} -> handle_errors(changeset)
+    end
+  end
+
+  defp update(%Ecto.Changeset{} = changeset) do
+    case Repo.update(changeset) do
       {:ok, struct} -> {:ok, struct}
       {:error, changeset} -> handle_errors(changeset)
     end
