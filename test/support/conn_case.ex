@@ -14,6 +14,7 @@ defmodule FlashWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  import Flash.Factory
 
   using do
     quote do
@@ -33,6 +34,8 @@ defmodule FlashWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(Flash.Repo, {:shared, self()})
     end
 
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    topic = insert(:topic)
+
+    {:ok, conn: Phoenix.ConnTest.build_conn(), topic: topic}
   end
 end

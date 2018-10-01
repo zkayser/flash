@@ -82,4 +82,29 @@ defmodule FlashTest do
       assert "Back can't be blank" in errors
     end
   end
+
+  describe "list_topics/0" do
+    test "it retrieves all topics from the database", _ do
+      assert length(Flash.list_topics()) == 1
+      insert_list(2, :topic)
+      assert length(Flash.list_topics()) == 3
+    end
+  end
+
+  describe "list_decks/1" do
+    test "it retrieves all decks for the given topic", data do
+      assert length(Flash.list_decks(data.topic.id)) == 1
+      insert_list(2, :deck, topic_id: data.topic.id)
+      assert length(Flash.list_decks(data.topic.id)) == 3
+    end
+  end
+
+  describe "list_cards/1" do
+    test "it retrieves all the cards for a given deck", data do
+      insert_list(3, :card, deck_id: data.deck.id)
+      assert length(Flash.list_cards(data.deck.id)) == 3
+      insert_list(3, :card, deck_id: data.deck.id)
+      assert length(Flash.list_cards(data.deck.id)) == 6
+    end
+  end
 end

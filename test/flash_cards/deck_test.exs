@@ -1,6 +1,7 @@
 defmodule Flash.DeckTest do
   use ExUnit.Case
-  alias Flash.{Deck, Card}
+  alias Flash.{Deck, Card, Helpers}
+  import Ecto.Query
 
   @question "Question"
   @answer "Answer"
@@ -27,6 +28,13 @@ defmodule Flash.DeckTest do
 
     test "valid changeset" do
       assert Deck.changeset(%Deck{}, %{title: "Hello", topic_id: 1}).valid?
+    end
+  end
+
+  describe "decks_for_topic/1" do
+    test "it returns a query to retrieve all decks for a given topic" do
+      expected_query = from d in Deck, where: d.topic_id == ^1
+      Helpers.assert_query_equal(Deck.decks_for_topic(1), expected_query)
     end
   end
 end

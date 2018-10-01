@@ -20,8 +20,11 @@ defmodule FlashWeb.Router do
     get("/", PageController, :index)
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", FlashWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", FlashWeb do
+    pipe_through :api
+
+    resources "/decks", DeckController, except: [:new, :edit] do
+      resources "/cards", CardController, except: [:new, :edit]
+    end
+  end
 end

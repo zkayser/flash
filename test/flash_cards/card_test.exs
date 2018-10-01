@@ -127,4 +127,11 @@ defmodule Flash.CardTest do
       assert Card.changeset(%Card{}, %{front: @question, back: @answer, deck_id: 1}).valid?
     end
   end
+
+  describe "cards_for_deck/1" do
+    test "it creates a query to retrieve all cards for a given deck" do
+      expected_query = from c in Card, where: c.deck_id == ^1
+      Helpers.assert_query_equal(Card.cards_for_deck(1), expected_query)
+    end
+  end
 end

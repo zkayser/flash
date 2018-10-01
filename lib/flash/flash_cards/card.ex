@@ -62,6 +62,11 @@ defmodule Flash.Card do
     |> validate_required([:front, :back, :deck_id])
   end
 
+  @spec cards_for_deck(non_neg_integer) :: Ecto.Query.t()
+  def cards_for_deck(deck_id) do
+    from c in Card, where: c.deck_id == ^deck_id
+  end
+
   defp calculate_mastery(ratio, seen) when seen <= 10 and seen >= 5 do
     case ratio >= 0.9 do
       true -> :beginner

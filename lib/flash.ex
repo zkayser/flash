@@ -13,6 +13,14 @@ defmodule Flash do
   @type result :: success | error
 
   @doc """
+  Retrieves all topics
+  """
+  @spec list_topics() :: list(Topic.t())
+  def list_topics do
+    Repo.all(Topic)
+  end
+
+  @doc """
   Creates a new Topic struct and inserts it into
   the database. Topics must have a name to be valid.
   """
@@ -26,6 +34,17 @@ defmodule Flash do
   end
 
   @doc """
+  Returns a list of all decks for a
+  given topic
+  """
+  @spec list_decks(non_neg_integer()) :: list(Deck.t())
+  def list_decks(topic_id) do
+    topic_id
+      |> Deck.decks_for_topic()
+      |> Repo.all()
+  end
+
+  @doc """
   Creates a new Deck struct and inserts it into the
   database. Decks must be given a title to be valid
   """
@@ -36,6 +55,16 @@ defmodule Flash do
       true -> insert(changeset)
       false -> handle_errors(changeset)
     end
+  end
+
+  @doc """
+  Returns a list of all the cards for a given deck
+  """
+  @spec list_cards(non_neg_integer) :: list(Card.t())
+  def list_cards(deck_id) do
+    deck_id
+      |> Card.cards_for_deck()
+      |> Repo.all()
   end
 
   @doc """

@@ -1,7 +1,7 @@
 defmodule Flash.Deck do
   alias __MODULE__
   alias Flash.{Card, Topic}
-  import Ecto.Changeset
+  import Ecto.{Changeset, Query}
   use Ecto.Schema
 
   @moduledoc """
@@ -31,5 +31,11 @@ defmodule Flash.Deck do
     struct
     |> cast(params, [:title, :topic_id])
     |> validate_required([:title, :topic_id])
+  end
+
+  @spec decks_for_topic(non_neg_integer) :: Ecto.Query.t
+  def decks_for_topic(topic_id) do
+    from d in Deck,
+    where: d.topic_id == ^topic_id
   end
 end
