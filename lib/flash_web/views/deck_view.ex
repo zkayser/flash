@@ -10,7 +10,7 @@ defmodule FlashWeb.DeckView do
     %{title: deck.title, cards: length(deck.cards)}
   end
 
-  def render("topic_missing.json", _) do
-    %{error: "Topic not found"}
+  def render("error.json", %{message: message}) do
+    %{error: message}
   end
 end

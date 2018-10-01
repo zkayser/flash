@@ -107,4 +107,25 @@ defmodule FlashTest do
       assert length(Flash.list_cards(data.deck.id)) == 6
     end
   end
+
+  describe "get_deck/1" do
+    test "it retrieves the given deck when it exists", data do
+      assert Flash.get_deck(data.deck.id) == data.deck
+    end
+
+    test "returns nil when deck does not exist", _ do
+      assert Flash.get_deck(123) == nil
+    end
+  end
+
+  describe "get_card/1" do
+    test "it retrieves the given card when it exists", data do
+      card = insert(:card, deck_id: data.deck.id)
+      assert Flash.get_card(card.id) == card
+    end
+
+    test "it returns nil when card does not exist", _ do
+      assert Flash.get_card(123) == nil
+    end
+  end
 end

@@ -8,8 +8,11 @@ defmodule FlashWeb.DeckController do
     end
   end
 
-  def show(conn, _params) do
-    json conn, %{}
+  def show(conn, %{"id" => deck_id}) do
+    case Flash.get_deck(deck_id) do
+      nil -> render_error(conn, :no_deck)
+      deck -> render(conn, "deck.json", deck: deck)
+    end
   end
 
   def create(conn, _params) do
@@ -27,6 +30,12 @@ defmodule FlashWeb.DeckController do
   defp render_error(conn, :no_topic) do
     conn
     |> put_status(:not_found)
-    |> render("topic_missing.json")
+    |> render("error.json", %{message: "Topic not found"})
+  end
+
+  defp render_error(conn, :no_deck) do
+    conn
+    |> put_status(:not_found)
+    |> render("error.json", %{message: "Deck not found"})
   end
 end

@@ -58,6 +58,14 @@ defmodule Flash do
   end
 
   @doc """
+  Retrieves the given deck
+  """
+  @spec get_deck(non_neg_integer) :: Deck.t() | nil
+  def get_deck(deck_id) do
+    Repo.get(Deck, deck_id)
+  end
+
+  @doc """
   Returns a list of all the cards for a given deck
   """
   @spec list_cards(non_neg_integer) :: list(Card.t())
@@ -82,6 +90,11 @@ defmodule Flash do
       true -> insert(changeset)
       false -> handle_errors(changeset)
     end
+  end
+
+  @spec get_card(non_neg_integer) :: Card.t() | nil
+  def get_card(card_id) do
+    Repo.get(Card, card_id)
   end
 
   defp insert(%Ecto.Changeset{} = changeset) do

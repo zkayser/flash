@@ -43,4 +43,28 @@ defmodule Flash.DeckControllerTest do
       assert response == %{"data" => []}
     end
   end
+
+  describe "show/2" do
+    test "when there is a deck to show", %{conn: conn, topic: topic} do
+      deck = insert(:deck, topic_id: topic.id)
+
+      response =
+        conn
+        |> get(deck_path(conn, :show, deck))
+        |> json_response(200)
+
+      expected_response = %{"title" => deck.title, "cards" => 0}
+
+      assert response == expected_response
+    end
+
+    test "when the deck does not exist", %{conn: conn} do
+      response =
+        conn
+        |> get(deck_path(conn, :show, 123))
+        |> json_response(404)
+
+        assert response = %{"error" => "Deck not found"}
+    end
+  end
 end
