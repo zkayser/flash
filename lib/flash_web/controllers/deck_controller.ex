@@ -22,8 +22,11 @@ defmodule FlashWeb.DeckController do
     end
   end
 
-  def update(conn, _params) do
-    json conn, %{}
+  def update(conn, %{"id" => id, "title" => _} = params) do
+    case Flash.update_deck(Flash.get_deck(id), params) do
+      {:ok, %Flash.Deck{} = deck} -> render(conn, "deck.json", deck: deck)
+      {:error, errors} -> render_errors(conn, errors)
+    end
   end
 
   def delete(conn, _params) do

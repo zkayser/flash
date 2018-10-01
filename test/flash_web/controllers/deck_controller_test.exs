@@ -98,4 +98,26 @@ defmodule Flash.DeckControllerTest do
       assert response == %{"error" => ["Title can't be blank"]}
     end
   end
+
+  describe "update/2" do
+    test "with valid params", %{conn: conn, topic: topic} do
+      deck = insert(:deck, topic_id: topic.id)
+      response =
+        conn
+        |> patch(deck_path(conn, :update, deck, %{"title" => @title}))
+        |> json_response(200)
+
+      assert response == %{"title" => @title, "cards" => 0}
+    end
+
+    test "with invalid params", %{conn: conn, topic: topic} do
+      deck = insert(:deck, topic_id: topic.id)
+      response =
+        conn
+        |> patch(deck_path(conn, :update, deck, %{"title" => ""}))
+        |> json_response(400)
+
+      assert response == %{"error" => ["Title can't be blank"]}
+    end
+  end
 end
