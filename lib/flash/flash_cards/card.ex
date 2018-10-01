@@ -59,6 +59,7 @@ defmodule Flash.Card do
   def changeset(%Card{} = card, attrs \\ %{}) do
     card
     |> cast(attrs, [:front, :back, :deck_id])
+    |> foreign_key_constraint(:deck_id)
     |> validate_required([:front, :back, :deck_id])
   end
 

@@ -10,7 +10,20 @@ defmodule FlashWeb.DeckView do
     %{title: deck.title, cards: length(deck.cards)}
   end
 
+  def render("error.json", %{message: messages}) when is_list(messages) do
+    %{error: format_messages(messages)}
+  end
+
   def render("error.json", %{message: message}) do
-    %{error: message}
+    %{error: format_message(message)}
+  end
+
+  defp format_messages(messages) when is_list(messages) do
+    messages
+    |> Enum.map(&format_message/1)
+  end
+
+  defp format_message(message) do
+    String.replace(message, "Topic_id does not exist", "Topic not found")
   end
 end

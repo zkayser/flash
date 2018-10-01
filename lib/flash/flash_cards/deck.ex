@@ -30,6 +30,7 @@ defmodule Flash.Deck do
   def changeset(%Deck{} = struct, params \\ %{}) do
     struct
     |> cast(params, [:title, :topic_id])
+    |> foreign_key_constraint(:topic_id)
     |> validate_required([:title, :topic_id])
   end
 

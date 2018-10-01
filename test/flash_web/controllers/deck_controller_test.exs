@@ -4,6 +4,8 @@ defmodule Flash.DeckControllerTest do
   import Flash.Factory
   alias Flash.Repo
 
+  @title "some title"
+
   describe "index/2" do
     test "returns all decks", %{conn: conn, topic: topic} do
       decks = insert_list(2, :deck, topic_id: topic.id)
@@ -64,7 +66,36 @@ defmodule Flash.DeckControllerTest do
         |> get(deck_path(conn, :show, 123))
         |> json_response(404)
 
-        assert response = %{"error" => "Deck not found"}
+        assert response == %{"error" => "Deck not found"}
+    end
+  end
+
+  describe "create/2" do
+    test "with valid params", %{conn: conn, topic: topic} do
+      response =
+        conn
+        |> post(deck_path(conn, :create, %{"topic_id" => topic.id, "title" => @title}))
+        |> json_response(200)
+
+      assert response == %{"title" => @title, "cards" => 0}
+    end
+
+    test "with invalid topic id", %{conn: conn} do
+      response =
+        conn
+        |> post(deck_path(conn, :create, %{"topic_id" => 123, "title" => @title}))
+        |> json_response(404)
+
+      assert response == %{"error" => ["Topic not found"]}
+    end
+
+    test "with empty title", %{conn: conn, topic: topic} do
+      response =
+        conn
+        |> post(deck_path(conn, :create, %{"topic_id" => topic.id, "title" => ""}))
+        |> json_response(400)
+
+      assert response == %{"error" => ["Title can't be blank"]}
     end
   end
 end
