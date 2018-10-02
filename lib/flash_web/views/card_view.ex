@@ -10,9 +10,10 @@ defmodule FlashWeb.CardView do
     %{front: card.front,
       back: card.back,
       times_seen: card.times_seen,
+      next_review: card.next_review,
       success_rate: Card.success_rate(card),
       is_due: Card.is_due?(card),
-      next_review: Card.next_review(card)
+      next_review_string: Card.next_review(card)
     }
   end
 end

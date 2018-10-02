@@ -24,13 +24,22 @@ defmodule FlashWeb.CardControllerTest do
           %{"front" => card.front,
             "back" => card.back,
             "times_seen" => card.times_seen,
+            "next_review" => format_test_data_time(card.next_review),
             "success_rate" => 0,
             "is_due" => true,
-            "next_review" => "Now"
+            "next_review_string" => "Now"
           }
         end)
 
       assert response == %{"data" => expected_data}
     end
+  end
+
+  # Creates the equivalent datetime string from
+  # a NaiveDateTime used for test data.
+  defp format_test_data_time(naive_datetime) do
+    naive_datetime
+    |> to_string()
+    |> String.replace(" ", "T")
   end
 end
