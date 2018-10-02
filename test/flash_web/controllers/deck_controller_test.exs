@@ -129,7 +129,7 @@ defmodule Flash.DeckControllerTest do
       |> json_response(200)
     end
 
-    test "with a deck that does not exist", %{conn: conn, topic: topic} do
+    test "with a deck that does not exist", %{conn: conn} do
       response =
         conn
         |> delete(deck_path(conn, :delete, 123))

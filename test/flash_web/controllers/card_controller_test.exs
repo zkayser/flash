@@ -26,7 +26,7 @@ defmodule FlashWeb.CardControllerTest do
             "times_seen" => card.times_seen,
             "success_rate" => 0,
             "is_due" => true,
-            "next_review" => :now
+            "next_review" => "Now"
           }
         end)
 

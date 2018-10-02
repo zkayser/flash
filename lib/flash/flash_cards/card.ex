@@ -71,7 +71,8 @@ defmodule Flash.Card do
   @spec success_rate(t()) :: integer()
   def success_rate(%Card{times_seen: 0}), do: 0
   def success_rate(%Card{} = card) do
-    (card.successes / card.times_seen)
+    card.successes
+    |> Kernel./(card.times_seen)
     |> Kernel.*(100)
     |> Float.round()
     |> trunc()
