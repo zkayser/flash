@@ -120,4 +120,22 @@ defmodule Flash.DeckControllerTest do
       assert response == %{"error" => ["Title can't be blank"]}
     end
   end
+
+  describe "delete/2" do
+    test "with an existing deck", %{conn: conn, topic: topic} do
+      deck = insert(:deck, topic_id: topic.id)
+      conn
+      |> delete(deck_path(conn, :delete, deck))
+      |> json_response(200)
+    end
+
+    test "with a deck that does not exist", %{conn: conn, topic: topic} do
+      response =
+        conn
+        |> delete(deck_path(conn, :delete, 123))
+        |> json_response(404)
+
+      assert response == %{"error" => "Deck not found"}
+    end
+  end
 end

@@ -80,7 +80,7 @@ defmodule Flash do
   @doc """
   Deletes the given deck, if it exists
   """
-  @spec delete_deck(non_neg_integer) :: :ok | error
+  @spec delete_deck(non_neg_integer) :: :ok | nil | error
   def delete_deck(deck_id) do
     deck = get_deck(deck_id)
     if deck do

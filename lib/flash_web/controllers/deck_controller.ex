@@ -29,8 +29,12 @@ defmodule FlashWeb.DeckController do
     end
   end
 
-  def delete(conn, _params) do
-    json conn, %{}
+  def delete(conn, %{"id" => id}) do
+    case Flash.delete_deck(id) do
+      :ok -> json(conn, %{})
+      nil -> render_error(conn, :no_deck)
+      {:error, errors} -> render_errors(conn, errors)
+    end
   end
 
   defp render_error(conn, :no_topic) do
