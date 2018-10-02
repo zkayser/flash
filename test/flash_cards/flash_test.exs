@@ -125,7 +125,7 @@ defmodule FlashTest do
     end
 
     test "it returns nil when card does not exist", _ do
-      assert Flash.get_card(123) == nil
+      assert Flash.get_card(123) == {:error, :not_found, :card}
     end
   end
 

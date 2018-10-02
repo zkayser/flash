@@ -11,6 +11,8 @@ defmodule Flash do
   @typep success :: {:ok, Topic.t() | Deck.t() | Card.t()}
   @typep error :: {:error, list(String.t())}
   @type result :: success | error
+  @type not_found :: {:error, :not_found, entity}
+  @type entity :: :card | :deck
 
   @doc """
   Retrieves all topics
@@ -123,9 +125,12 @@ defmodule Flash do
   @doc """
   Retrieves a card from the database
   """
-  @spec get_card(non_neg_integer) :: Card.t() | nil
+  @spec get_card(non_neg_integer) :: Card.t() | not_found()
   def get_card(card_id) do
-    Repo.get(Card, card_id)
+    case Repo.get(Card, card_id) do
+      %Card{} = card -> card
+      nil -> {:error, :not_found, :card}
+    end
   end
 
   @doc """
@@ -145,13 +150,13 @@ defmodule Flash do
   """
   @spec delete_card(non_neg_integer) :: :ok | nil | error
   def delete_card(card_id) do
-    card = get_card(card_id)
-    if card do
+    with %Card{} = card <- get_card(card_id) do
       case Repo.delete(card) do
         {:ok, _} -> :ok
         {:error, changeset} -> handle_errors(changeset)
       end
     else
+      _ ->
       nil
     end
   end
