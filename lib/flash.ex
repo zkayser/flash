@@ -78,6 +78,22 @@ defmodule Flash do
   end
 
   @doc """
+  Deletes the given deck, if it exists
+  """
+  @spec delete_deck(non_neg_integer) :: :ok | error
+  def delete_deck(deck_id) do
+    deck = get_deck(deck_id)
+    if deck do
+      case Repo.delete(deck) do
+        {:ok, _} -> :ok
+        {:error, changeset} -> handle_errors(changeset)
+      end
+    else
+      nil
+    end
+  end
+
+  @doc """
   Returns a list of all the cards for a given deck
   """
   @spec list_cards(non_neg_integer) :: list(Card.t())
@@ -104,6 +120,9 @@ defmodule Flash do
     end
   end
 
+  @doc """
+  Retrieves a card from the database
+  """
   @spec get_card(non_neg_integer) :: Card.t() | nil
   def get_card(card_id) do
     Repo.get(Card, card_id)

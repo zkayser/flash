@@ -140,4 +140,14 @@ defmodule FlashTest do
       assert "Title can't be blank" in errors
     end
   end
+
+  describe "delete_deck/1" do
+    test "given an existing deck", data do
+      assert :ok = Flash.delete_deck(data.deck.id)
+    end
+
+    test "when the deck does not exist", _ do
+      assert nil == Flash.delete_deck(123)
+    end
+  end
 end
