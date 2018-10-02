@@ -66,6 +66,44 @@ defmodule FlashWeb.CardControllerTest do
     end
   end
 
+  describe "create/2" do
+    test "with valid params", %{conn: conn} = data do
+      params = %{"front" => "a question", "back" => "an answer"}
+      response =
+        conn
+        |> post(deck_card_path(conn, :create, data.deck, params))
+        |> json_response(201)
+
+      expected_card = build(:card,
+                            deck_id: data.deck.id,
+                            front: "a question",
+                            back: "an answer")
+
+      expected_response = %{
+        "front" => expected_card.front,
+        "back" => expected_card.back,
+        "times_seen" => expected_card.times_seen,
+        "next_review" => format_test_data_time(expected_card.next_review),
+        "success_rate" => 0,
+        "is_due" => true,
+        "next_review_string" => "Now"
+      }
+
+      assert response == expected_response
+    end
+
+    test "with invalid params", %{conn: conn} = data do
+      params = %{"front" => "", "back" => ""}
+      response =
+        conn
+        |> post(deck_card_path(conn, :create, data.deck, params))
+        |> json_response(400)
+
+      assert "Front can't be blank" in response["errors"]
+      assert "Back can't be blank" in response["errors"]
+    end
+  end
+
   # Creates the equivalent datetime string from
   # a NaiveDateTime used for test data.
   defp format_test_data_time(naive_datetime) do

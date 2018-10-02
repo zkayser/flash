@@ -14,8 +14,12 @@ defmodule FlashWeb.CardController do
     end
   end
 
-  def create(conn, _params) do
-    json conn, %{}
+  def create(conn, %{"deck_id" => _} = params) do
+    with {:ok, %Flash.Card{} = card} <- Flash.create_card(params) do
+      conn
+      |> put_status(:created)
+      |> render("card.json", %{card: card})
+    end
   end
 
   def update(conn, _params) do
