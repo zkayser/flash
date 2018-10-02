@@ -141,6 +141,20 @@ defmodule FlashTest do
     end
   end
 
+  describe "update_card/2" do
+    test "with valid params", data do
+      card = insert(:card, deck_id: data.deck.id)
+      assert {:ok, %Flash.Card{} = card} = Flash.update_card(card, %{"front" => "new question"})
+      assert card.front == "new question"
+    end
+
+    test "with invalid params", data do
+      card = insert(:card, deck_id: data.deck.id)
+      assert {:error, errors} = Flash.update_card(card, %{"front" => ""})
+      assert "Front can't be blank" in errors
+    end
+  end
+
   describe "delete_deck/1" do
     test "given an existing deck", data do
       assert :ok = Flash.delete_deck(data.deck.id)

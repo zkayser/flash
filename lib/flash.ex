@@ -128,6 +128,18 @@ defmodule Flash do
     Repo.get(Card, card_id)
   end
 
+  @doc """
+  Updates a card
+  """
+  @spec update_card(Card.t(), map()) :: result()
+  def update_card(%Card{} = card, attrs) do
+    changeset = Card.changeset(card, attrs)
+    case changeset.valid? do
+      true -> update(changeset)
+      false -> handle_errors(changeset)
+    end
+  end
+
   defp insert(%Ecto.Changeset{} = changeset) do
     case Repo.insert(changeset) do
       {:ok, struct} -> {:ok, struct}
