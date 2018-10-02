@@ -68,7 +68,7 @@ defmodule Flash.Card do
     from c in Card, where: c.deck_id == ^deck_id
   end
 
-  @spec success_rate(t()) :: nil
+  @spec success_rate(t()) :: integer()
   def success_rate(%Card{times_seen: 0}), do: 0
   def success_rate(%Card{} = card) do
     (card.successes / card.times_seen)
@@ -78,7 +78,12 @@ defmodule Flash.Card do
   end
 
   @spec is_due?(t()) :: boolean()
-  def is_due?(%Card{} = _card), do: false
+  def is_due?(%Card{next_review: next}) do
+    case NaiveDateTime.compare(NaiveDateTime.utc_now, next) do
+      :gt -> true
+      _ -> false
+    end
+  end
 
   @spec next_review(t()) :: String.t()
   def next_review(%Card{} = _card), do: ""

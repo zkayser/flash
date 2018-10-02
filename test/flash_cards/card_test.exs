@@ -157,7 +157,19 @@ defmodule Flash.CardTest do
   end
 
   describe "is_due?/1" do
+    test "when is past due" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, -60, :seconds)}
 
+      assert Card.is_due?(card)
+    end
+
+    test "when not past due" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60, :seconds)}
+
+      refute Card.is_due?(card)
+    end
   end
 
   describe "next_review/1" do
