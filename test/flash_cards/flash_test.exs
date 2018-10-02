@@ -164,4 +164,16 @@ defmodule FlashTest do
       assert nil == Flash.delete_deck(123)
     end
   end
+
+  describe "delete_card/1" do
+    test "given an existing card", data do
+      card = insert(:card, deck_id: data.deck.id)
+
+      assert :ok = Flash.delete_card(card.id)
+    end
+
+    test "when the card does not exist", _ do
+      assert nil == Flash.delete_card(123)
+    end
+  end
 end

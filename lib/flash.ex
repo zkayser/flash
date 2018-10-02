@@ -140,6 +140,22 @@ defmodule Flash do
     end
   end
 
+  @doc """
+  Deletes the given card
+  """
+  @spec delete_card(non_neg_integer) :: :ok | nil | error
+  def delete_card(card_id) do
+    card = get_card(card_id)
+    if card do
+      case Repo.delete(card) do
+        {:ok, _} -> :ok
+        {:error, changeset} -> handle_errors(changeset)
+      end
+    else
+      nil
+    end
+  end
+
   defp insert(%Ecto.Changeset{} = changeset) do
     case Repo.insert(changeset) do
       {:ok, struct} -> {:ok, struct}
