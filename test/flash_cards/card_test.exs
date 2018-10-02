@@ -173,6 +173,59 @@ defmodule Flash.CardTest do
   end
 
   describe "next_review/1" do
+    test "when due within 10 minutes" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60 * 10, :seconds)}
 
+      assert Card.next_review(card) == "In less than 10 minutes"
+    end
+
+    test "when due now" do
+      card = %Card{next_review: NaiveDateTime.utc_now()}
+
+      assert Card.next_review(card) == "Now"
+    end
+
+    test "when do within a minute" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60, :seconds)}
+
+      assert Card.next_review(card) == "In less than a minute"
+    end
+
+    test "when due within an hour" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60 * 60, :seconds)}
+
+      assert Card.next_review(card) == "In less than an hour"
+    end
+
+    test "when due within 4 hours" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60 * 60 * 4, :seconds)}
+
+      assert Card.next_review(card) == "In a few hours"
+    end
+
+    test "when due within 24 hours" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60 * 60 * 24, :seconds)}
+
+      assert Card.next_review(card) == "In less than 24 hours"
+    end
+
+    test "when due within 4 days" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60 * 60 * 24 * 4, :seconds)}
+
+      assert Card.next_review(card) == "In a few days"
+    end
+
+    test "when due in more than 4 days" do
+      now = NaiveDateTime.utc_now()
+      card = %Card{next_review: NaiveDateTime.add(now, 60 * 60 * 24 * 5, :seconds)}
+
+      assert Card.next_review(card) == "Not due for a while"
+    end
   end
 end

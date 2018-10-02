@@ -86,7 +86,21 @@ defmodule Flash.Card do
   end
 
   @spec next_review(t()) :: String.t()
-  def next_review(%Card{} = _card), do: ""
+  def next_review(%Card{next_review: next} = card) do
+    if is_due?(card) do
+      "Now"
+    else
+      case NaiveDateTime.diff(next, NaiveDateTime.utc_now()) do
+        x when x <= 60 -> "In less than a minute"
+        x when x <= 60 * 10 -> "In less than 10 minutes"
+        x when x <= 60 * 60 -> "In less than an hour"
+        x when x <= 60 * 60 * 4 -> "In a few hours"
+        x when x <= 60 * 60 * 24 -> "In less than 24 hours"
+        x when x <= 60 * 60 * 24 * 4 -> "In a few days"
+        _ -> "Not due for a while"
+      end
+    end
+  end
 
   defp calculate_mastery(ratio, seen) when seen <= 10 and seen >= 5 do
     case ratio >= 0.9 do
