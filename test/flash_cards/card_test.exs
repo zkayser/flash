@@ -134,4 +134,33 @@ defmodule Flash.CardTest do
       Helpers.assert_query_equal(Card.cards_for_deck(1), expected_query)
     end
   end
+
+  describe "success_rate/1" do
+    test "when card is brand new/never seen" do
+      assert Card.success_rate(%Card{}) == 0
+    end
+
+    test "when card has a 50% success rate" do
+      card = %Card{successes: 2, times_seen: 4}
+      assert Card.success_rate(card) == 50
+    end
+
+    test "when card has a 100% success rate" do
+      card = %Card{successes: 4, times_seen: 4}
+      assert Card.success_rate(card) == 100
+    end
+
+    test "when card has a success rate not cleanly divisble by 100" do
+      card = %Card{successes: 2, times_seen: 3}
+      assert Card.success_rate(card) == 67
+    end
+  end
+
+  describe "is_due?/1" do
+
+  end
+
+  describe "next_review/1" do
+
+  end
 end

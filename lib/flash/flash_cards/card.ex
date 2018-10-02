@@ -68,6 +68,21 @@ defmodule Flash.Card do
     from c in Card, where: c.deck_id == ^deck_id
   end
 
+  @spec success_rate(t()) :: nil
+  def success_rate(%Card{times_seen: 0}), do: 0
+  def success_rate(%Card{} = card) do
+    (card.successes / card.times_seen)
+    |> Kernel.*(100)
+    |> Float.round()
+    |> trunc()
+  end
+
+  @spec is_due?(t()) :: boolean()
+  def is_due?(%Card{} = _card), do: false
+
+  @spec next_review(t()) :: String.t()
+  def next_review(%Card{} = _card), do: ""
+
   defp calculate_mastery(ratio, seen) when seen <= 10 and seen >= 5 do
     case ratio >= 0.9 do
       true -> :beginner

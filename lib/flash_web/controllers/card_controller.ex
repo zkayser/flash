@@ -1,8 +1,9 @@
 defmodule FlashWeb.CardController do
   use FlashWeb, :controller
 
-  def index(conn, _params) do
-    json conn, %{}
+  def index(conn, %{"deck_id" => deck_id}) do
+    cards = Flash.list_cards(deck_id)
+    render(conn, "index.json", %{cards: cards})
   end
 
   def show(conn, _params) do
