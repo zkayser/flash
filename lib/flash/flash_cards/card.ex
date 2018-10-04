@@ -1,5 +1,6 @@
 defmodule Flash.Card do
   alias __MODULE__
+  alias Flash.Card.Scheduler
   use Ecto.Schema
   import Ecto.{Query, Changeset}
 
@@ -22,7 +23,6 @@ defmodule Flash.Card do
     field(:front, :string, default: "")
     field(:back, :string, default: "")
     field(:successes, :integer, default: 0)
-    field(:failures, :integer, default: 0)
     field(:times_seen, :integer, default: 0)
     field(:next_review, :naive_datetime, default: NaiveDateTime.utc_now())
     field(:last_review, :naive_datetime, default: NaiveDateTime.utc_now())
@@ -40,20 +40,27 @@ defmodule Flash.Card do
     end
   end
 
-  @spec update(t(), true) :: Ecto.Query.t()
-  def update(%Card{} = card, true) do
-    from(c in Card,
-      where: c.id == ^card.id,
-      update: [inc: [successes: 1, times_seen: 1]]
-    )
+  @doc """
+  Takes a card and a boolean value indicating whether
+  the user answered the question on the card correctly
+  for a single review.
+
+  Returns a Changeset that increments the `times_seen`
+  property of the card by one and increments `successes`
+  if the review was passed
+  """
+  @spec review_passed?(t(), String.t()) :: Ecto.Changeset.t()
+  def review_passed?(%Card{} = card, passed)
+  when passed == "true" or passed == "false" do
+    card
+    |> change()
+    |> put_change(:times_seen, card.times_seen + 1)
+    |> put_change(:successes, inc_successes?(card, passed))
+    |> put_change(:next_review, Scheduler.schedule_next_review(card, passed))
   end
 
-  def update(%Card{} = card, false) do
-    from(c in Card,
-      where: c.id == ^card.id,
-      update: [inc: [failures: 1, times_seen: 1]]
-    )
-  end
+  defp inc_successes?(card, "true"), do: card.successes + 1
+  defp inc_successes?(card, "false"), do: card.successes
 
   @spec changeset(t(), map()) :: Ecto.Changeset.t()
   def changeset(%Card{} = card, attrs \\ %{}) do

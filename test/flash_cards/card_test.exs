@@ -69,23 +69,24 @@ defmodule Flash.CardTest do
     end
   end
 
-  describe "update/2" do
+  describe "review_passed/2" do
     test "when review is successful" do
-      card = %Card{id: 1}
+      changeset =
+        %Card{id: 1}
+        |> Card.review_passed?(true)
 
-      expected_query =
-        from(c in Card, where: c.id == ^1, update: [inc: [successes: 1, times_seen: 1]])
-
-      Helpers.assert_query_equal(Card.update(card, true), expected_query)
+      assert changeset.valid?
+      assert changeset.changes[:times_seen] == 1
+      assert changeset.changes[:successes] == 1
     end
 
     test "when review is unsuccessful" do
-      card = %Card{id: 1}
+      changeset =
+        %Card{id: 1}
+        |> Card.review_passed?(false)
 
-      expected_query =
-        from(c in Card, where: c.id == ^1, update: [inc: [failures: 1, times_seen: 1]])
-
-      Helpers.assert_query_equal(Card.update(card, false), expected_query)
+      assert changeset.valid?
+      assert %{times_seen: 1} == changeset.changes
     end
   end
 

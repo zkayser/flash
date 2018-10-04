@@ -22,8 +22,14 @@ defmodule FlashWeb.CardController do
     end
   end
 
-  def update(conn, _params) do
-    json conn, %{}
+  def update(conn, %{"deck_id" => _, "id" => id, "passed" => passed}) do
+    with %Flash.Card{} = card <- Flash.get_card(id),
+          {:ok, %Flash.Card{} = card} <-
+            card
+            |> Flash.Card.review_passed?(passed)
+            |> Flash.Repo.update() do
+      render(conn, "card.json", %{card: card})
+    end
   end
 
   def delete(conn, _params) do

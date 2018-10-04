@@ -104,6 +104,43 @@ defmodule FlashWeb.CardControllerTest do
     end
   end
 
+  describe "update/2" do
+    test "with valid params", %{conn: conn} = data do
+      [card|_] = data.cards
+      params = %{"front" => "a new question", "back" => "an updated answer"}
+      response =
+        conn
+        |> patch(deck_card_path(conn, :update, data.deck, card, params))
+        |> json_response(200)
+
+      expected_response = %{
+        "front" => "a new question",
+        "back" => "an updated answer",
+        "times_seen" => card.times_seen,
+        "next_review" => format_test_data_time(card.next_review),
+        "success_rate" => 0,
+        "is_due" => true,
+        "next_review_string" => "Now"
+      }
+
+      assert response == expected_response
+    end
+
+    test "with 'passed' true param", %{conn: conn} = data do
+      [card|_] = data.cards
+      params = %{"passed" => true}
+      response =
+        conn
+        |> patch(deck_card_path(conn, :update, data.deck, card, params))
+        |> json_response(200)
+
+      assert response["times_seen"] == 1
+      assert response["success_rate"] == 100
+      assert response["next_review"] != card.next_review
+      assert response["next_review_string"] == "In less than 24 hours"
+    end
+  end
+
   # Creates the equivalent datetime string from
   # a NaiveDateTime used for test data.
   defp format_test_data_time(naive_datetime) do
