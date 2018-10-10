@@ -24,6 +24,7 @@ defmodule Flash.Card do
     field(:back, :string, default: "")
     field(:successes, :integer, default: 0)
     field(:times_seen, :integer, default: 0)
+    field :streak, :integer, default: 0
     field(:next_review, :naive_datetime, default: NaiveDateTime.utc_now())
     field(:last_review, :naive_datetime, default: NaiveDateTime.utc_now())
 
@@ -56,7 +57,7 @@ defmodule Flash.Card do
     |> change()
     |> put_change(:times_seen, card.times_seen + 1)
     |> put_change(:successes, inc_successes?(card, passed))
-    |> put_change(:next_review, Scheduler.schedule_next_review(card, passed))
+    |> put_change(:next_review, prepare_next_review(card, passed))
   end
 
   defp inc_successes?(card, "true"), do: card.successes + 1
@@ -107,6 +108,20 @@ defmodule Flash.Card do
         x when x <= 60 * 60 * 24 * 4 -> "In a few days"
         _ -> "Not due for a while"
       end
+    end
+  end
+
+  defp prepare_next_review(card, passed?) do
+    card
+      |> update_streak(passed?)
+      |> Scheduler.schedule_next_review()
+  end
+
+  defp update_streak(card, passed?) do
+    case String.to_existing_atom(passed?) do
+      true -> %Card{card | streak: card.streak + 1}
+      false -> %Card{card | streak: 0}
+      _ -> card
     end
   end
 
