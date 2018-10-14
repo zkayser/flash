@@ -73,7 +73,7 @@ defmodule Flash.CardTest do
     test "when review is successful" do
       changeset =
         %Card{id: 1}
-        |> Card.review_passed?(true)
+        |> Card.review_passed?("true")
 
       assert changeset.valid?
       assert changeset.changes[:times_seen] == 1
@@ -83,7 +83,7 @@ defmodule Flash.CardTest do
     test "when review is unsuccessful" do
       changeset =
         %Card{id: 1}
-        |> Card.review_passed?(false)
+        |> Card.review_passed?("false")
 
       assert changeset.valid?
       assert %{times_seen: 1} == changeset.changes

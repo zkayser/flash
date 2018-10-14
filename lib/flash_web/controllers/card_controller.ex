@@ -32,6 +32,14 @@ defmodule FlashWeb.CardController do
     end
   end
 
+  def update(conn, %{"deck_id" => _, "id" => id} = params) do
+    with %Flash.Card{} = card <- Flash.get_card(id),
+      {:ok, %Flash.Card{} = card} <- Flash.update_card(card, params)
+      do
+        render(conn, "card.json", %{card: card})
+      end
+  end
+
   def delete(conn, _params) do
     json conn, %{}
   end

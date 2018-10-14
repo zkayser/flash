@@ -107,7 +107,9 @@ defmodule FlashWeb.CardControllerTest do
   describe "update/2" do
     test "with valid params", %{conn: conn} = data do
       [card|_] = data.cards
-      params = %{"front" => "a new question", "back" => "an updated answer"}
+      params = %{
+        "front" => "a new question",
+        "back" => "an updated answer"}
       response =
         conn
         |> patch(deck_card_path(conn, :update, data.deck, card, params))
