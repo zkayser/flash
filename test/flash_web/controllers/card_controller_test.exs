@@ -8,7 +8,8 @@ defmodule FlashWeb.CardControllerTest do
     deck = insert(:deck, topic_id: context.topic.id)
     cards = insert_list(3, :card, deck_id: deck.id)
 
-    {:ok, %{conn: context.conn, topic: context.topic, deck: Repo.preload(deck, :cards), cards: cards}}
+    {:ok,
+     %{conn: context.conn, topic: context.topic, deck: Repo.preload(deck, :cards), cards: cards}}
   end
 
   describe "index/2" do
@@ -21,7 +22,8 @@ defmodule FlashWeb.CardControllerTest do
       expected_data =
         data.cards
         |> Enum.map(fn card ->
-          %{"front" => card.front,
+          %{
+            "front" => card.front,
             "back" => card.back,
             "times_seen" => card.times_seen,
             "next_review" => format_test_data_time(card.next_review),
@@ -42,7 +44,8 @@ defmodule FlashWeb.CardControllerTest do
         |> get(deck_card_path(conn, :show, data.deck, hd(data.cards)))
         |> json_response(200)
 
-      [card|_] = data.cards
+      [card | _] = data.cards
+
       expected_response = %{
         "front" => card.front,
         "back" => card.back,
@@ -69,15 +72,18 @@ defmodule FlashWeb.CardControllerTest do
   describe "create/2" do
     test "with valid params", %{conn: conn} = data do
       params = %{"front" => "a question", "back" => "an answer"}
+
       response =
         conn
         |> post(deck_card_path(conn, :create, data.deck, params))
         |> json_response(201)
 
-      expected_card = build(:card,
-                            deck_id: data.deck.id,
-                            front: "a question",
-                            back: "an answer")
+      expected_card =
+        build(:card,
+          deck_id: data.deck.id,
+          front: "a question",
+          back: "an answer"
+        )
 
       expected_response = %{
         "front" => expected_card.front,
@@ -94,6 +100,7 @@ defmodule FlashWeb.CardControllerTest do
 
     test "with invalid params", %{conn: conn} = data do
       params = %{"front" => "", "back" => ""}
+
       response =
         conn
         |> post(deck_card_path(conn, :create, data.deck, params))
@@ -106,10 +113,9 @@ defmodule FlashWeb.CardControllerTest do
 
   describe "update/2" do
     test "with valid params", %{conn: conn} = data do
-      [card|_] = data.cards
-      params = %{
-        "front" => "a new question",
-        "back" => "an updated answer"}
+      [card | _] = data.cards
+      params = %{"front" => "a new question", "back" => "an updated answer"}
+
       response =
         conn
         |> patch(deck_card_path(conn, :update, data.deck, card, params))
@@ -129,8 +135,9 @@ defmodule FlashWeb.CardControllerTest do
     end
 
     test "with 'passed' true param", %{conn: conn} = data do
-      [card|_] = data.cards
+      [card | _] = data.cards
       params = %{"passed" => true}
+
       response =
         conn
         |> patch(deck_card_path(conn, :update, data.deck, card, params))
@@ -140,6 +147,20 @@ defmodule FlashWeb.CardControllerTest do
       assert response["success_rate"] == 100
       assert response["next_review"] != card.next_review
       assert response["next_review_string"] == "In less than 24 hours"
+    end
+  end
+
+  describe "delete/2" do
+    test "it deletes the card", %{conn: conn} = data do
+      [card | _] = data.cards
+
+      response =
+        conn
+        |> delete(deck_card_path(conn, :delete, data.deck, card))
+        |> json_response(200)
+
+      assert response["message"] == "Card deleted successfully"
+      assert {:error, :not_found, :card} = Flash.get_card(card.id)
     end
   end
 

@@ -1,7 +1,7 @@
 defmodule FlashWeb.CardController do
   use FlashWeb, :controller
 
-  action_fallback FlashWeb.FallbackController
+  action_fallback(FlashWeb.FallbackController)
 
   def index(conn, %{"deck_id" => deck_id}) do
     cards = Flash.list_cards(deck_id)
@@ -24,23 +24,24 @@ defmodule FlashWeb.CardController do
 
   def update(conn, %{"deck_id" => _, "id" => id, "passed" => passed}) do
     with %Flash.Card{} = card <- Flash.get_card(id),
-          {:ok, %Flash.Card{} = card} <-
-            card
-            |> Flash.Card.review_passed?(passed)
-            |> Flash.Repo.update() do
+         {:ok, %Flash.Card{} = card} <-
+           card
+           |> Flash.Card.review_passed?(passed)
+           |> Flash.Repo.update() do
       render(conn, "card.json", %{card: card})
     end
   end
 
   def update(conn, %{"deck_id" => _, "id" => id} = params) do
     with %Flash.Card{} = card <- Flash.get_card(id),
-      {:ok, %Flash.Card{} = card} <- Flash.update_card(card, params)
-      do
-        render(conn, "card.json", %{card: card})
-      end
+         {:ok, %Flash.Card{} = card} <- Flash.update_card(card, params) do
+      render(conn, "card.json", %{card: card})
+    end
   end
 
-  def delete(conn, _params) do
-    json conn, %{}
+  def delete(conn, %{"id" => id}) do
+    with :ok <- Flash.delete_card(id) do
+      render(conn, "deleted.json", %{})
+    end
   end
 end
