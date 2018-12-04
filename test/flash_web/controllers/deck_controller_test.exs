@@ -18,8 +18,8 @@ defmodule Flash.DeckControllerTest do
 
       expected = %{
         "data" => [
-          %{"title" => deck1.title, "cards" => length(deck1.cards)},
-          %{"title" => deck2.title, "cards" => length(deck2.cards)}
+          %{"title" => deck1.title, "id" => deck1.id},
+          %{"title" => deck2.title, "id" => deck2.id}
         ]
       }
 
@@ -55,7 +55,7 @@ defmodule Flash.DeckControllerTest do
         |> get(deck_path(conn, :show, deck))
         |> json_response(200)
 
-      expected_response = %{"title" => deck.title, "cards" => 0}
+      expected_response = %{"title" => deck.title, "id" => deck.id}
 
       assert response == expected_response
     end
@@ -77,7 +77,7 @@ defmodule Flash.DeckControllerTest do
         |> post(deck_path(conn, :create, %{"topic_id" => topic.id, "title" => @title}))
         |> json_response(200)
 
-      assert response == %{"title" => @title, "cards" => 0}
+      assert %{"title" => @title, "id" => _} = response
     end
 
     test "with invalid topic id", %{conn: conn} do
@@ -107,7 +107,7 @@ defmodule Flash.DeckControllerTest do
         |> patch(deck_path(conn, :update, deck, %{"title" => @title}))
         |> json_response(200)
 
-      assert response == %{"title" => @title, "cards" => 0}
+      assert response == %{"title" => @title, "id" => deck.id}
     end
 
     test "with invalid params", %{conn: conn, topic: topic} do

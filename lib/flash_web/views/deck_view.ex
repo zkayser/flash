@@ -6,8 +6,7 @@ defmodule FlashWeb.DeckView do
   end
 
   def render("deck.json", %{deck: deck}) do
-    deck = Flash.Repo.preload(deck, [:cards])
-    %{title: deck.title, cards: length(deck.cards)}
+    %{title: deck.title, id: deck.id}
   end
 
   def render("error.json", %{message: messages}) when is_list(messages) do

@@ -43,6 +43,7 @@ defmodule Flash.Mixfile do
       {:cowboy, "~> 1.0"},
       {:dialyxir, "~> 1.0.0-rc.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false},
+      {:cors_plug, "~> 1.5"},
       {:ex_machina, "~> 2.2", only: :test}
     ]
   end

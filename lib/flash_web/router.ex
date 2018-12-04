@@ -10,6 +10,7 @@ defmodule FlashWeb.Router do
   end
 
   pipeline :api do
+    plug(CORSPlug, origin: ["http://localhost:8080", "http://0.0.0.0:8080"])
     plug(:accepts, ["json"])
   end
 
@@ -21,10 +22,13 @@ defmodule FlashWeb.Router do
   end
 
   scope "/api", FlashWeb do
-    pipe_through :api
+    pipe_through(:api)
+
+    resources("/topics", TopicController, except: [:new, :edit])
+    options("/topics", TopicController, :create)
 
     resources "/decks", DeckController, except: [:new, :edit] do
-      resources "/cards", CardController, except: [:new, :edit]
+      resources("/cards", CardController, except: [:new, :edit])
     end
   end
 end

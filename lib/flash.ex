@@ -19,7 +19,9 @@ defmodule Flash do
   """
   @spec list_topics() :: list(Topic.t())
   def list_topics do
-    Repo.all(Topic)
+    Topic
+      |> Repo.all()
+      |> Repo.preload([:sub_topics, :decks])
   end
 
   @doc """
